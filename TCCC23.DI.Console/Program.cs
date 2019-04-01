@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Debugging;
 
@@ -24,7 +25,9 @@ namespace TCCC23.DI.Console
             try
             {
                 // application logic here
-                System.Console.ReadKey();
+                var log = serviceProvider.GetRequiredService<ILogger<Application>>();
+                var app = new Application(log);
+                app.Run(args);
             }
             catch (Exception ex)
             {
@@ -41,7 +44,8 @@ namespace TCCC23.DI.Console
         {
             services
                 .AddLogging(configure => configure.AddSerilog(dispose: true));
-                // add other services here
+            // add other services here
         }
+
     }
 }
