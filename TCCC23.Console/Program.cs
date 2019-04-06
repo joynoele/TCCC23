@@ -9,7 +9,7 @@ namespace TCCC23.Console
 
         static void Main(string[] args)
         {
-            _log = DemoLoggers.EnrichedMachineNameConsole();
+            _log = DemoLoggers.MinimumLogLevel();
             TestMessages();
 
             System.Console.ReadKey();

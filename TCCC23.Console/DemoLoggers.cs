@@ -28,7 +28,7 @@ namespace TCCC23.Console
         public static Logger DualSink()
         {
             return new LoggerConfiguration()
-                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                .WriteTo.Console()
                 .WriteTo.File("log_DualSink.txt")
                 .CreateLogger();
         }
