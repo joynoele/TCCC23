@@ -1,10 +1,10 @@
-﻿using Serilog;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TCCC23.Console
 {
@@ -93,6 +93,15 @@ namespace TCCC23.Console
                 .WriteTo.Logger(lc => lc
                     .Filter.ByExcluding(x => x.Level > LogEventLevel.Warning)
                     .WriteTo.File("log_SubLoggerGoodtoknow.txt"))
+                .CreateLogger();
+        }
+
+        public static Logger MongoLogger()
+        {
+            System.Console.OutputEncoding = System.Text.Encoding.UTF8;
+            return new LoggerConfiguration()
+                .WriteTo.MongoDB("mongodb://localhost/TCCC23", collectionName: "logs")
+                .WriteTo.Console()
                 .CreateLogger();
         }
     }

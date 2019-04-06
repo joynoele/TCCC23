@@ -16,7 +16,6 @@ namespace TCCC23.DI.Console
         public void Run(string[] args)
         {
             _log.LogInformation("Running with input parameter {parameters}", args);
-
         }
     }
 }
