@@ -17,7 +17,22 @@ namespace TCCC23.Console
 
         private string GetEnvironment()
         {
+            // Logic for determining environment goes here
             return "Production";
+        }
+    }
+
+    public class LoggedInUser : ILogEventEnricher
+    {
+        private readonly string _username;
+        public LoggedInUser(string username)
+        {
+            _username = username;
+        }
+        public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+        {
+            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty(
+                "username", _username));
         }
     }
 }

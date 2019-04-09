@@ -12,10 +12,7 @@ namespace TCCC23.DI.Console
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.MongoDB("mongodb://TCCC23.com:27017", collectionName:"logs")
-                    //batchPostingLimit:25
-                    //formatProvider:)
                 .WriteTo.Console()
-                //.WriteTo.File("log_DIConsole.txt")
                 .CreateLogger();
 
             SelfLog.Enable(System.Console.Error); // Include to get helpful messages of the logger itself

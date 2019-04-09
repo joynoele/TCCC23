@@ -48,7 +48,8 @@ namespace TCCC23.Console
             return new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .WriteTo.Console(theme: AnsiConsoleTheme.Code)
-                .WriteTo.File("log_MinimumSinkLevel.txt", restrictedToMinimumLevel: LogEventLevel.Warning)
+                .WriteTo.File("log_MinimumSinkLevel.txt", 
+                    restrictedToMinimumLevel: LogEventLevel.Warning)
                 .CreateLogger();
         }
 
@@ -56,8 +57,10 @@ namespace TCCC23.Console
         {
             return new LoggerConfiguration()
                 .MinimumLevel.Information()
-                .WriteTo.Console(theme: AnsiConsoleTheme.Code, restrictedToMinimumLevel: LogEventLevel.Debug)
-                .WriteTo.File("log_MinimumSinkAndLogLevel.txt", restrictedToMinimumLevel: LogEventLevel.Warning)
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code, 
+                    restrictedToMinimumLevel: LogEventLevel.Debug)
+                .WriteTo.File("log_MinimumSinkAndLogLevel.txt", 
+                    restrictedToMinimumLevel: LogEventLevel.Warning)
                 .CreateLogger();
         }
 
@@ -69,6 +72,15 @@ namespace TCCC23.Console
                 //.Enrich.WithProperty("Environment", "Production")
                 .WriteTo.Console(
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Environment}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+        }
+
+        public static Logger EnrichedLogContextEnvironmentConsole()
+        {
+            return new LoggerConfiguration()
+                .Enrich.FromLogContext() // now can use using(LogContext.Push(...)) {...}
+                .WriteTo.Console(
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{username}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
         }
 
@@ -101,7 +113,21 @@ namespace TCCC23.Console
             System.Console.OutputEncoding = System.Text.Encoding.UTF8;
             return new LoggerConfiguration()
                 .WriteTo.MongoDB("mongodb://localhost/TCCC23", collectionName: "logs")
-                .WriteTo.Console()
+                .Enrich.FromLogContext()
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                .CreateLogger();
+        }
+
+        public static Logger Troubleshooting()
+        {
+            return new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .Enrich.FromLogContext()
+                .WriteTo.MongoDB("mongodb://localhost/TCCC23", collectionName: "troubleshootdata", restrictedToMinimumLevel:LogEventLevel.Information)
+                .WriteTo.File("C:\\tmp\\TroubleshootExample.txt", restrictedToMinimumLevel:LogEventLevel.Debug)
+                .WriteTo.ColoredConsole(
+                    restrictedToMinimumLevel:LogEventLevel.Information,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Thread}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
         }
     }
