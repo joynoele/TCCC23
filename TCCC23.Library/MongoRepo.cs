@@ -4,11 +4,11 @@ using System.Text;
 
 namespace TCCC23.Library
 {
-    public class MongoClient
+    public class MongoRepo
     {
-        public string MongoConnectionString()
+        public static string MongoConnectionString()
         {
-            return "mongodb://";
+            return "mongodb://TCCC23.com:27017";
         }
     }
 }

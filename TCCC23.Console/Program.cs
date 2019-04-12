@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Serilog;
 using Serilog.Context;
+using Serilog.Events;
 
 namespace TCCC23.Console
 {
@@ -10,47 +11,12 @@ namespace TCCC23.Console
     {
         static void Main(string[] args)
         {
-            // Specify the logger and test message to use
-            Log.Logger = DemoLoggers.Troubleshooting();
-            //TestMessages3();
+            //Log.Logger = DemoLoggers.DualSink();
+            //TestMessages();
 
-            Thread evezino = new Thread(delegate ()
-            {
-                RunXTimes(50);
-            })
-            { Name = "evezino" };
+            TroubleshootingDemo();
 
-            Thread nblumhardt = new Thread(delegate ()
-            {
-                RunXTimes(30);
-            })
-            { Name = "nblumhardt" };
-
-            Thread jatwood = new Thread(delegate ()
-                {
-                    RunXTimes(20);
-                })
-            { Name = "jatwood" };
-
-
-            evezino.Start();
-            nblumhardt.Start();
-            /////////
-
-            System.Console.WriteLine("Press any key to exit ...");
             System.Console.ReadKey();
-        }
-
-        private static void RunXTimes(int runTimes)
-        {
-            using (LogContext.PushProperty("Thread", Thread.CurrentThread.Name))
-            {
-                var events = new CreateEvents();
-                for (int i = 0; i < runTimes; i++)
-                {
-                    events.RunRandomQuery();
-                }
-            }
         }
 
         static void TestMessages()
@@ -75,8 +41,8 @@ namespace TCCC23.Console
             foreach (var combo in foo)
             {
                 // These lines are variations on writing out the same content
-                //Log.Logger.Information("{greeting}, {leader}({age})", combo.greeting, combo.name, combo.age);
-                Log.Logger.Information("{@user}", combo);
+                Log.Logger.Information("{greeting}, {leader}({age})", combo.greeting, combo.name, combo.age);
+                //Log.Logger.Information("{@user}", combo);
             }
         }
 
@@ -98,6 +64,54 @@ namespace TCCC23.Console
                 }
             }
         }
+
+        static void TroubleshootingDemo()
+        {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .Enrich.FromLogContext()
+                .WriteTo.MongoDB("mongodb://localhost/TCCC23", collectionName: "troubleshootdata", restrictedToMinimumLevel: LogEventLevel.Information)
+                .WriteTo.File("C:\\tmp\\TroubleshootExample.txt", restrictedToMinimumLevel: LogEventLevel.Debug)
+                .WriteTo.ColoredConsole(
+                    restrictedToMinimumLevel: LogEventLevel.Information,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Thread}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+
+            Thread evezino = new Thread(delegate ()
+                {
+                    RunXTimes(40);
+                })
+                { Name = "evezino" };
+
+            Thread nblumhardt = new Thread(delegate ()
+                {
+                    RunXTimes(35);
+                })
+                { Name = "nblumhardt" };
+
+            Thread jatwood = new Thread(delegate ()
+                {
+                    RunXTimes(25);
+                })
+                { Name = "jatwood" };
+
+
+            evezino.Start();
+            nblumhardt.Start();
+            jatwood.Start();
+        }
+
+        private static void RunXTimes(int runTimes)
+        {
+            using (LogContext.PushProperty("Thread", Thread.CurrentThread.Name))
+            {
+                var events = new CreateEvents();
+                for (int i = 0; i < runTimes; i++)
+                {
+                    events.RunRandomQuery();
+                }
+            }
+        }
     }
 
     public class CreateEvents
@@ -110,24 +124,14 @@ namespace TCCC23.Console
 
         public void RunRandomQuery()
         {
-            var query = rand.Next(1, 5);
+            var query = rand.Next(1, 6);
             switch (query)
             {
-                case 1:
-                    Query1();
-                    break;
-                case 2:
-                    Query2();
-                    break;
-                case 3:
-                    Query3();
-                    break;
-                case 4:
-                    Query4();
-                    break;
-                case 5:
-                    Query5();
-                    break;
+                case 1: Query1(); break;
+                case 2: Query2(); break;
+                case 3: Query3(); break;
+                case 4: Query4(); break;
+                case 5: Query5(); break;
             }
         }
 
@@ -136,9 +140,9 @@ namespace TCCC23.Console
             using (LogContext.PushProperty("query", "Query1"))
             {
                 var queryTime = rand.Next(1, 2000);
-                Query(queryTime);
+                ExecuteQuery(queryTime);
                 Log.Logger.Debug("");
-                Log.Logger.Information("{query} took {sec}ms to run", "query1", queryTime);
+                Log.Logger.Information("{query} took {ms}ms to run", "Query1", queryTime);
             }
         }
         private void Query2()
@@ -146,9 +150,9 @@ namespace TCCC23.Console
             using (LogContext.PushProperty("query", "Query2"))
             {
                 var queryTime = rand.Next(1, 3000);
-                Query(queryTime);
+                ExecuteQuery(queryTime);
                 Log.Logger.Debug("");
-                Log.Logger.Information("{query} took {sec}ms to run", "query2", queryTime);
+                Log.Logger.Information("{query} took {ms}ms to run", "Query2", queryTime);
             }
         }
         private void Query3()
@@ -156,9 +160,9 @@ namespace TCCC23.Console
             using (LogContext.PushProperty("query", "Query3"))
             {
                 var queryTime = rand.Next(1, 4000);
-                Query(queryTime);
+                ExecuteQuery(queryTime);
                 Log.Logger.Debug("");
-                Log.Logger.Information("{query} took {sec}ms to run", "query3", queryTime);
+                Log.Logger.Information("{query} took {ms}ms to run", "Query3", queryTime);
             }
         }
         private void Query4()
@@ -166,9 +170,9 @@ namespace TCCC23.Console
             using (LogContext.PushProperty("query", "Query4"))
             {
                 var queryTime = rand.Next(1000, 5000);
-                Query(queryTime);
+                ExecuteQuery(queryTime);
                 Log.Logger.Debug("");
-                Log.Logger.Information("{query} took {sec}ms to run", "query4", queryTime);
+                Log.Logger.Information("{query} took {ms}ms to run", "Query4", queryTime);
             }
         }
         private void Query5()
@@ -176,17 +180,17 @@ namespace TCCC23.Console
             using (LogContext.PushProperty("query", "Query5"))
             {
                 var queryTime = rand.Next(3000, 5000);
-                Query(queryTime);
+                ExecuteQuery(queryTime);
                 Log.Logger.Debug("");
-                Log.Logger.Information("{query} took {sec}ms to run", "query5", queryTime);
+                Log.Logger.Information("{query} took {ms}ms to run", "Query5", queryTime);
             }
         }
 
-        private void Query(int sleeptime)
+        private void ExecuteQuery(int sleeptime)
         {
-            if (sleeptime > 2500 && sleeptime < 3500)
-                Log.Logger.Error(new Exception("Uh Oh! This query failed."), "Error Id: {ErrorGuid}: ", Guid.NewGuid());
             System.Threading.Thread.Sleep(sleeptime);
+            if (sleeptime > 2500 && sleeptime < 3500)
+                Log.Logger.Error(new Exception($"Error Id: {Guid.NewGuid()}"), "\tQuery execution failed with execution time {sec}s", sleeptime/1000.0);
         }
     }
 }

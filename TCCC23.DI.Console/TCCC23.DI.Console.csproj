@@ -14,4 +14,8 @@
     <PackageReference Include="Serilog.Sinks.MongoDB" Version="4.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TCCC23.Library\TCCC23.Library.csproj" />
+  </ItemGroup>
+
 </Project>

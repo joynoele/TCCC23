@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Debugging;
+using TCCC23.Library;
 
 namespace TCCC23.DI.Console
 {
@@ -11,7 +12,7 @@ namespace TCCC23.DI.Console
         static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.MongoDB("mongodb://TCCC23.com:27017", collectionName:"logs")
+                .WriteTo.MongoDB(MongoRepo.MongoConnectionString(), collectionName:"logs")
                 .WriteTo.Console()
                 .CreateLogger();
 

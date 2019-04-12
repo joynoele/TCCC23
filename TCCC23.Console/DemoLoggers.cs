@@ -10,46 +10,11 @@ namespace TCCC23.Console
 {
     public static class DemoLoggers
     {
-        public static Logger SimplestConsole()
-        {
-            return new LoggerConfiguration()
-                .WriteTo.Console()
-                .CreateLogger();
-        }
-
-        public static Logger SimplestFile()
-        {
-            // logs to Source\Repos\TCCC23\TCCC23\bin\Debug\netcoreapp2.1\log.txt
-            return new LoggerConfiguration()
-                .WriteTo.File("log_SimplestFile.txt")
-                .CreateLogger();
-        }
-
         public static Logger DualSink()
         {
             return new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.File("log_DualSink.txt")
-                .CreateLogger();
-        }
-
-        public static Logger MinimumLogLevel()
-        {
-            // "if no MinimumLevel is specified, then Information level events and higher will be processed."
-            return new LoggerConfiguration()
-                .MinimumLevel.Warning()
-                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
-                .WriteTo.File("log_MinimumLogLevel.txt")
-                .CreateLogger();
-        }
-
-        public static Logger MinimumSinkLevel()
-        {
-            return new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
-                .WriteTo.File("log_MinimumSinkLevel.txt", 
-                    restrictedToMinimumLevel: LogEventLevel.Warning)
+                .WriteTo.File(@"C:\tmp\logs\log_DualSink.txt")
                 .CreateLogger();
         }
 
@@ -66,10 +31,10 @@ namespace TCCC23.Console
 
         public static Logger EnrichedEnvironmentConsole()
         {
-            // Use custom enricher Serilog.Enrichers.Environment
+            
             return new LoggerConfiguration()
-                .Enrich.With(new EnvironmentEnricher())
-                //.Enrich.WithProperty("Environment", "Production")
+                .Enrich.With(new EnvironmentEnricher()) // Use custom enricher Serilog.Enrichers.Environment
+                //.Enrich.WithProperty("Environment", "Production") // same result
                 .WriteTo.Console(
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{Environment}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
@@ -78,7 +43,7 @@ namespace TCCC23.Console
         public static Logger EnrichedLogContextEnvironmentConsole()
         {
             return new LoggerConfiguration()
-                .Enrich.FromLogContext() // now can use using(LogContext.Push(...)) {...}
+                .Enrich.FromLogContext() // now can use--> using(LogContext.Push(...)) {...}
                 .WriteTo.Console(
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{username}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
@@ -115,19 +80,6 @@ namespace TCCC23.Console
                 .WriteTo.MongoDB("mongodb://localhost/TCCC23", collectionName: "logs")
                 .Enrich.FromLogContext()
                 .WriteTo.Console(theme: AnsiConsoleTheme.Code)
-                .CreateLogger();
-        }
-
-        public static Logger Troubleshooting()
-        {
-            return new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .Enrich.FromLogContext()
-                .WriteTo.MongoDB("mongodb://localhost/TCCC23", collectionName: "troubleshootdata", restrictedToMinimumLevel:LogEventLevel.Information)
-                .WriteTo.File("C:\\tmp\\TroubleshootExample.txt", restrictedToMinimumLevel:LogEventLevel.Debug)
-                .WriteTo.ColoredConsole(
-                    restrictedToMinimumLevel:LogEventLevel.Information,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Thread}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
         }
     }
