@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TCCC23.Library
+﻿namespace TCCC23.Library
 {
     public class MongoRepo
     {
+        public static string Log => "logs";
+        public static string Demo => "troubleshootdata";
+
         public static string MongoConnectionString()
         {
-            return "mongodb://TCCC23.com:27017";
+            // get usernme and password from somewhere else for non-local instances
+            return @"mongodb://localhost/TCCC23";
         }
     }
 }

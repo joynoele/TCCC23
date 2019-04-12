@@ -12,7 +12,7 @@ namespace TCCC23.DI.Console
         static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.MongoDB(MongoRepo.MongoConnectionString(), collectionName:"logs")
+                .WriteTo.MongoDB(MongoRepo.MongoConnectionString(), collectionName: MongoRepo.Log)
                 .WriteTo.Console()
                 .CreateLogger();
 
