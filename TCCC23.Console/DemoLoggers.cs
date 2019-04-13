@@ -10,11 +10,13 @@ namespace TCCC23.Console
 {
     public static class DemoLoggers
     {
+        private static string WriteLocation = @"C:\tmp\logs\backup";
+
         public static Logger DualSink()
         {
             return new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.File(@"C:\tmp\logs\log_DualSink.txt")
+                .WriteTo.File($@"{WriteLocation}\log_DualSink.txt")
                 .CreateLogger();
         }
 
@@ -24,8 +26,18 @@ namespace TCCC23.Console
                 .MinimumLevel.Information()
                 .WriteTo.Console(theme: AnsiConsoleTheme.Code, 
                     restrictedToMinimumLevel: LogEventLevel.Debug)
-                .WriteTo.File("log_MinimumSinkAndLogLevel.txt", 
+                .WriteTo.File($@"{WriteLocation}\log_MinimumSinkAndLogLevel.txt", 
                     restrictedToMinimumLevel: LogEventLevel.Warning)
+                .CreateLogger();
+        }
+
+        public static Logger EnrichedMachineNameConsole()
+        {
+            // Use built-in enricher Serilog.Enrichers.Environment
+            return new LoggerConfiguration()
+                .Enrich.WithMachineName()
+                .WriteTo.Console(
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{MachineName}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .CreateLogger();
         }
 
@@ -49,17 +61,6 @@ namespace TCCC23.Console
                 .CreateLogger();
         }
 
-        // do this before custom ones
-        public static Logger EnrichedMachineNameConsole()
-        {
-            // Use built-in enricher Serilog.Enrichers.Environment
-            return new LoggerConfiguration()
-                .Enrich.WithMachineName()
-                .WriteTo.Console(
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss zzz} [{MachineName}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .CreateLogger();
-        }
-
         public static Logger SubLogger()
         {
             return new LoggerConfiguration()
@@ -67,10 +68,10 @@ namespace TCCC23.Console
                 .WriteTo.Console(theme: AnsiConsoleTheme.Code, restrictedToMinimumLevel: LogEventLevel.Debug)
                 .WriteTo.Logger(lc => lc
                     .Filter.ByIncludingOnly(x => x.Level >= LogEventLevel.Warning)
-                    .WriteTo.File("log_SubLoggerIssues.txt"))
+                    .WriteTo.File($@"{WriteLocation}\log_SubLoggerIssues.txt"))
                 .WriteTo.Logger(lc => lc
                     .Filter.ByExcluding(x => x.Level > LogEventLevel.Warning)
-                    .WriteTo.File("log_SubLoggerGoodtoknow.txt"))
+                    .WriteTo.File($@"{WriteLocation}\log_SubLoggerGoodtoknow.txt"))
                 .CreateLogger();
         }
 
