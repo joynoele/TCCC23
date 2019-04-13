@@ -71,8 +71,7 @@ namespace TCCC23.Console
                 .MinimumLevel.Verbose()
                 .Enrich.FromLogContext()
                 .WriteTo.MongoDB("mongodb://localhost/TCCC23", collectionName: "troubleshootdata", restrictedToMinimumLevel: LogEventLevel.Information)
-                //.WriteTo.File("C:\\tmp\\TroubleshootExample.txt", restrictedToMinimumLevel: LogEventLevel.Debug)
-                .WriteTo.File(@"C:\tmp\logs\backup\TroubleshootExample.txt", restrictedToMinimumLevel: LogEventLevel.Debug)
+                .WriteTo.File("C:\\tmp\\TroubleshootExample.txt", restrictedToMinimumLevel: LogEventLevel.Debug)
                 .WriteTo.ColoredConsole(
                     restrictedToMinimumLevel: LogEventLevel.Information,
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Thread}:{Level:u3}] {Message:lj}{NewLine}{Exception}")
