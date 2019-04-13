@@ -49,6 +49,7 @@ namespace TCCC23.Console
                 .CreateLogger();
         }
 
+        // do this before custom ones
         public static Logger EnrichedMachineNameConsole()
         {
             // Use built-in enricher Serilog.Enrichers.Environment

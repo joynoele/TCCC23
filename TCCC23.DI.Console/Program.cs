@@ -12,6 +12,7 @@ namespace TCCC23.DI.Console
         static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
                 .WriteTo.MongoDB(MongoRepo.MongoConnectionString(), collectionName: MongoRepo.Log)
                 .WriteTo.Console()
                 .CreateLogger();
@@ -27,7 +28,8 @@ namespace TCCC23.DI.Console
             {
                 // application logic here
                 var log = serviceProvider.GetRequiredService<ILogger<Application>>();
-                var app = new Application(log);
+                var helper = serviceProvider.GetRequiredService<IHelper>();
+                var app = new Application(log, helper);
                 app.Run(args);
             }
             catch (Exception ex)
@@ -44,7 +46,8 @@ namespace TCCC23.DI.Console
         private static void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddLogging(configure => configure.AddSerilog(dispose: true));
+                .AddLogging(configure => configure.AddSerilog(dispose: true))
+                .AddSingleton<IHelper, Helper>();
             // add other services here
         }
 

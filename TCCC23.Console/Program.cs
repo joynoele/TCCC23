@@ -11,10 +11,10 @@ namespace TCCC23.Console
     {
         static void Main(string[] args)
         {
-            //Log.Logger = DemoLoggers.DualSink();
-            //TestMessages();
+            Log.Logger = DemoLoggers.MinimumSinkAndLogLevel();
+            TestMessages();
 
-            TroubleshootingDemo();
+            //TroubleshootingDemo();
 
             System.Console.ReadKey();
         }

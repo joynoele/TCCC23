@@ -18,7 +18,19 @@ namespace TCCC23.Console
         private string GetEnvironment()
         {
             // Logic for determining environment goes here
-            return "Production";
+            var rand = new Random();
+            var env = rand.Next(2);
+            switch (env)
+            {
+                case 0:
+                    return "Production";
+                case 1:
+                    return "QA";
+                case 2:
+                    return "Dev";
+                default:
+                    return "Unknown";
+            }
         }
     }
 
