@@ -46,7 +46,7 @@ Some helpful links for evaluating Serilog vs NLog
   <li>[Reddit](https://www.reddit.com/r/dotnet/comments/9cziy4/nlog_vs_log4net_vs_serilog_compare_net_logging)</li>
 </ul>
 
-Implementation consideratins for Serilog:
+Implementation considerations for Serilog:
 <ul>
   <li><strong>NugGet packages</strong> many to choose from; never had an issues with any of them but thing about each package is another dependancy for your application</li>
   <li><strong>Dependancy Injectinon</strong> Serilog is static, which means to use DI you'll need to either wrap it or use the built in implementation of ILogger (see code example)</li>
@@ -59,8 +59,8 @@ Implementation consideratins for Serilog:
 Thank you for attending! 
 
 You can find me, Elsa Vezino, active in these local communities/events:
-[Twin Cities .NET User Group](https://www.meetup.com/tcdnug/)
-
-[Speaking at Norwegian Developer Conference Minnesota 2019](https://ndcminnesota.com/talk/everyday-agile-for-one-recipes-that-make-development-for-one-fun/) 
-
-[Scratch mentor at Twin Cities Coder Dojo](https://www.coderdojotc.org/)
+<ul>
+  <li>[Twin Cities .NET User Group](https://www.meetup.com/tcdnug/)</li>
+  <li>[Speaking at Norwegian Developer Conference Minnesota 2019](https://ndcminnesota.com/talk/everyday-agile-for-one-recipes-that-make-development-for-one-fun/) </li>
+  <li>[Scratch mentor at Twin Cities Coder Dojo](https://www.coderdojotc.org/)</li>
+</ul>
